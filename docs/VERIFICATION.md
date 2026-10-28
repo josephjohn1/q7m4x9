@@ -6,7 +6,7 @@ Checked locally on 27 October 2026. This records executed checks separately from
 
 - **Python tests:** `.venv/bin/python -m pytest -q` — 36 passed. Tests cover calculation examples, inclusive forecast cutoffs, future-publication exclusion, actual revision filtering, missing values, zero generation, hourly alignment, energy conversion, duplicate conflicts, London daylight-saving boundaries, January decision boundaries, API validation, CSV exports and archive integrity.
 - **Frontend production build:** `npm run build --prefix frontend` — TypeScript checking and Vite production compilation passed. Chart dependencies are split into a separate bundle.
-- **Prepared-folder startup:** `./scripts/run-local.sh` started the app using its project-local Python environment. `/api/health` returned `status: "ok"` and `checksums_verified: true`. The same process served the built React application and API.
+- **Local startup:** `./scripts/run-local.sh` started the app using its project-local Python environment. `/api/health` returned `status: "ok"` and `checksums_verified: true`. The same process served the built React application and API.
 - **Frontend dependency audit:** `npm audit` in `frontend` — zero known vulnerabilities, including development dependencies. Vite was updated during verification to address reported advisories.
 - **Python runtime dependency audit:** `pip-audit -r requirements.txt` — no known vulnerabilities reported. Runtime dependencies were updated before the final test run. Audits reflect the advisory databases available at check time, not a guarantee against all security defects.
 - **Compose configuration:** `docker compose config --quiet` — valid configuration.
@@ -32,11 +32,17 @@ The locally served production build was exercised in the in-app Chromium browser
 
 `preview.png` is a screenshot of the actual locally running application. Browser checks were performed interactively; no separate automated browser test suite is claimed. CSV content and headers are covered by the API test suite.
 
-## Environment limitations and remaining verification
+## Docker and production follow up
 
-- **Container execution:** not verified locally. The Docker CLI was present, but its daemon was unavailable. The Compose configuration check does not prove that the image builds or runs. With a working Docker installation, run `docker compose up --build`, check `/api/health` and the app, then run `docker compose down`. The included GitHub Actions workflow also builds and smoke-tests the image after the user pushes the project; that workflow has not yet run.
-- **Vercel deployment:** prepared but not performed, as requested. Configuration validation does not replace a real Vercel build and production smoke test. Follow `DEPLOYMENT.md` and verify both the UI and API on the public production domain.
-- **Repository, video and submission:** no remote repository was created or pushed, no video was recorded/uploaded, and no submission form was sent. `DEMO_SCRIPT.md` supplies an 8-minute-45-second outline for the required customer and technical presentations. The user must add their final app/video links to the README and verify access before submitting.
+The following checks passed on 27 October 2026 using the Docker container and the public deployment.
+
+- **Docker image:** `docker compose build` completed successfully using Node 22 and Python 3.12 base images on the local ARM64 machine.
+- **Container:** `docker compose up -d --wait --wait-timeout 60` completed and `docker compose ps` reported healthy. The container health endpoint returned `status: "ok"` and `checksums_verified: true`. The static HTML and all three referenced assets were served successfully. The final January decision delivered on 1 February, monthly accuracy contained 1,488 matched periods, and the monthly CSV contained 1,488 data rows.
+- **Public Vercel deployment:** [q7m4x9.vercel.app](https://q7m4x9.vercel.app/) loaded in a browser without a Vercel sign-in. The public health endpoint returned `status: "ok"` and `checksums_verified: true`. The deployed date controls, January boundary, earliest-day history warning, default forecast metrics and monthly analysis were checked. The browser downloaded the monthly CSV; its 1,488 rows and January decision / February delivery boundary were verified. No console errors were reported during the final browser check. `production-preview.png` records the deployed interface.
+
+## Verification scope
+
+GitHub Actions results have not been inspected. The container checks above were executed locally and are not evidence that the remote CI workflow passed.
 
 ## Reproduce the main checks
 

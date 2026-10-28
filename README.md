@@ -4,9 +4,7 @@ A React and Python pilot for replaying day-ahead wind decisions in January 2026.
 
 The app uses real Elexon WINDFOR and FUELHH data. The small source archive is included, so reviewers can run the product without an API key or an upstream data download.
 
-**Live application:** add your production Vercel URL here after deployment.
-
-**Demo video:** add your unlisted YouTube URL here after recording.
+**Live application:** [Wind Desk on Vercel](https://q7m4x9.vercel.app/).
 
 ![Wind Desk decision workspace](docs/preview.png)
 
@@ -25,9 +23,9 @@ python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
 
 Open [http://localhost:8000](http://localhost:8000). Interactive API documentation is at [http://localhost:8000/api/docs](http://localhost:8000/api/docs).
 
-Once dependencies have been installed and the frontend built, `./scripts/run-local.sh` starts the application. The local handover folder already has these dependencies and a production build, but ignored dependencies are not part of a Git clone.
+Once dependencies have been installed and the frontend built, `./scripts/run-local.sh` starts the application. Dependencies and build output are ignored by Git, so complete the installation steps after cloning the repository.
 
-For frontend development, run the Python server above, then run `npm run dev --prefix frontend` in a second terminal. Vite serves the frontend on port 5173 and proxies `/api` to Python on port 8000. Rebuild the frontend before using port 8000 for a production-style demo.
+For frontend development, run the Python server above, then run `npm run dev --prefix frontend` in a second terminal. Vite serves the frontend on port 5173 and proxies `/api` to Python on port 8000. Rebuild the frontend before using port 8000 to preview the production build.
 
 ## Run with Docker
 
@@ -51,7 +49,7 @@ The multi-stage Dockerfile builds React with Node and serves the resulting asset
    - Output: `frontend/dist`
 4. Deploy. No environment variables or API keys are required.
 5. Check `/`, `/api/health`, `/api/decision`, and `/api/accuracy` on the production domain. `/api/health` should return `status: "ok"`.
-6. Put the production URL in this README. Verify the app, repo and video in a private/incognito browser before submitting.
+6. Put the production URL in this README. Verify the app is accessible in a private/incognito browser.
 
 `api/index.py` exposes the same FastAPI application used locally. `/api/*` requests are rewritten to that Python function; the built React files are served as static assets. Python source and the data archive are included in the function bundle. `.vercelignore` excludes local dependencies, tests and scratch caches. See the [deployment guide](docs/DEPLOYMENT.md) for commands and troubleshooting.
 
@@ -128,10 +126,9 @@ frontend/public/            Favicon
 frontend/package-lock.json  Reproducible frontend dependency resolution
 data/                       Elexon snapshot and provenance manifest
 scripts/fetch_data.py        Reproducible Elexon ingestion command
-scripts/run-local.sh         Start the prepared local production build
+scripts/run-local.sh         Start the local production build
 docs/ARCHITECTURE.md         Technical review and implementation tradeoffs
-docs/DEMO_SCRIPT.md          Two-part video script under ten minutes
-docs/DEPLOYMENT.md           Git, Vercel and submission instructions
+docs/DEPLOYMENT.md           Vercel deployment and troubleshooting
 docs/VERIFICATION.md         Verified checks and environment limitations
 Dockerfile, compose.yaml    Portable container runtime
 vercel.json                 Static frontend and Python function deployment
@@ -150,7 +147,7 @@ The tests cover inclusive publication cutoffs, exclusion of later forecasts and 
 
 ## AI assistance
 
-**OpenAI Codex was used to assist with implementation, data investigation, interface design, tests and documentation.** The included data was fetched from Elexon; AI-generated data is not used. See `docs/VERIFICATION.md` for the checks actually executed and the remaining deployment/container verification steps.
+**OpenAI Codex was used to assist with implementation, data investigation, interface design, tests and documentation.** The included data was fetched from Elexon; AI-generated data is not used. See [verification results](docs/VERIFICATION.md) for the checks executed and their scope.
 
 ## Sources
 
