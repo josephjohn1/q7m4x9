@@ -39,19 +39,6 @@ Open [http://localhost:8000](http://localhost:8000). To stop it, run `docker com
 
 The multi-stage Dockerfile builds React with Node and serves the resulting assets and API from a non-root Python container. The archive is bundled in the image; it is not downloaded at startup. A health check verifies the data files. Docker is the portable runtime; Vercel uses its native Python function and static hosting rather than this image.
 
-## Deploy to Vercel
-
-1. Push this folder as the root of a public GitHub repository with an anonymous name, for example `q7m4x9`.
-2. Import that repository in Vercel. Keep **Root Directory** at the repository root, **not** `frontend`.
-3. Use **Framework Preset: Other**. The committed `vercel.json` sets `framework: null` and supplies:
-   - Install: `npm ci --prefix frontend`
-   - Build: `npm run build --prefix frontend`
-   - Output: `frontend/dist`
-4. Deploy. No environment variables or API keys are required.
-5. Check `/`, `/api/health`, `/api/decision`, and `/api/accuracy` on the production domain. `/api/health` should return `status: "ok"`.
-6. Put the production URL in this README. Verify the app is accessible in a private/incognito browser.
-
-`api/index.py` exposes the same FastAPI application used locally. `/api/*` requests are rewritten to that Python function; the built React files are served as static assets. Python source and the data archive are included in the function bundle. `.vercelignore` excludes local dependencies, tests and scratch caches. See the [deployment guide](docs/DEPLOYMENT.md) for commands and troubleshooting.
 
 ## Product walkthrough
 
